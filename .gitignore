@@ -1,0 +1,19 @@
+node_modules/
+dist/
+.env
+
+# Java/Maven
+target/
+.mvn/
+mvnw
+mvnw.cmd
+*.class
+*.jar
+*.war
+.idea/
+*.iml
+.vscode/
+
+# Ignore backend zip artifacts if any
+*.zip
+*.log
