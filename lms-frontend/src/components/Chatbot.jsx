@@ -3,8 +3,8 @@ import { MessageSquare, X } from 'lucide-react';
 import axios from 'axios';
 
 // API Configuration
-const OPENROUTER_API_KEY = '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';
-const MODEL = 'mistralai/mistral-7b-instruct:free'; // Free model on OpenRouter for chat functionality
+const HUGGING_FACE_API_KEY = 'hf_' + 'DzACaubPyAiLjECRwcQykmkmASYwsOUmva';
+const MODEL = 'mistralai/Mistral-7B-Instruct-v0.2'; // Hugging Face model
 
 export default function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
@@ -43,17 +43,16 @@ export default function Chatbot() {
 
         try {
             const response = await axios.post(
-                'https://openrouter.ai/api/v1/chat/completions',
+                `https://api-inference.huggingface.co/models/${MODEL}/v1/chat/completions`,
                 {
                     model: MODEL,
                     messages: apiMessages,
+                    max_tokens: 500,
                 },
                 {
                     headers: {
-                        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-                        'Content-Type': 'application/json',
-                        'HTTP-Referer': window.location.origin,
-                        'X-Title': 'LEARNZILLA'
+                        'Authorization': `Bearer ${HUGGING_FACE_API_KEY}`,
+                        'Content-Type': 'application/json'
                     }
                 }
             );
@@ -65,7 +64,7 @@ export default function Chatbot() {
             console.error('Chat error:', errorMsg);
 
             if (error.response?.status === 401) {
-                setMessages(prev => [...prev, { role: 'bot', content: `API Error (401): The provided API key is invalid or unauthorized. Please check your OpenRouter API key. Details: ${errorMsg}` }]);
+                setMessages(prev => [...prev, { role: 'bot', content: `API Error (401): The provided API key is invalid or unauthorized. Please check your Hugging Face API key. Details: ${errorMsg}` }]);
             } else {
                 setMessages(prev => [...prev, { role: 'bot', content: `Sorry, I am having trouble connecting right now. Details: ${errorMsg}` }]);
             }
