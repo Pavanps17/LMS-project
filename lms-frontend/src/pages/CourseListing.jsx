@@ -7,6 +7,7 @@ import { mockCourses, subjects } from '../mockData';
 export default function CourseListing() {
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [activeFilter, setActiveFilter] = useState('All');
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/courses')
@@ -21,14 +22,25 @@ export default function CourseListing() {
         <div className="courses-container">
             <h1 className="page-title text-gradient">Explore Our Courses</h1>
             <div className="filters">
-                <span className="badge active">All</span>
+                <span
+                    className={`badge ${activeFilter === 'All' ? 'active' : ''}`}
+                    onClick={() => setActiveFilter('All')}
+                >
+                    All
+                </span>
                 {subjects.map(sub => (
-                    <span key={sub} className="badge">{sub}</span>
+                    <span
+                        key={sub}
+                        className={`badge ${activeFilter === sub ? 'active' : ''}`}
+                        onClick={() => setActiveFilter(sub)}
+                    >
+                        {sub}
+                    </span>
                 ))}
             </div>
 
             <div className="course-grid">
-                {courses.map(course => (
+                {courses.filter(c => activeFilter === 'All' || c.category === activeFilter).map(course => (
                     <div key={course.id} className="course-card glass">
                         <div className="card-img-wrapper">
                             <img src={course.thumbnail_url} alt={course.title} className="course-thumbnail" />
