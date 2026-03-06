@@ -59,6 +59,7 @@ export default function CourseDetails() {
                     <span className="tag"><User size={16} /> {course.instructor?.uname || 'Instructor'}</span>
                     <span className="tag"><BookOpen size={16} /> {totalLessons} Lessons</span>
                     <span className="tag"><Clock size={16} /> {Math.floor(totalDuration / 60)}h {totalDuration % 60}m</span>
+                    <span className="tag" style={{ background: 'var(--text-main)', color: 'white' }}>${course.price || 999}</span>
                 </div>
                 <button onClick={handleEnroll} disabled={enrolling} className="btn-enroll shine-effect">
                     {enrolling ? 'Enrolling...' : 'Enroll Now'}

@@ -61,8 +61,14 @@ export default function Chatbot() {
             const botReply = response.data.choices[0].message.content;
             setMessages(prev => [...prev, { role: 'bot', content: botReply }]);
         } catch (error) {
-            console.error('Chat error:', error.response?.data || error.message);
-            setMessages(prev => [...prev, { role: 'bot', content: 'Sorry, I am having trouble connecting right now. Please try again later.' }]);
+            const errorMsg = error.response?.data?.error?.message || error.message;
+            console.error('Chat error:', errorMsg);
+
+            if (error.response?.status === 401) {
+                setMessages(prev => [...prev, { role: 'bot', content: `API Error (401): The provided API key is invalid or unauthorized. Please check your OpenRouter API key. Details: ${errorMsg}` }]);
+            } else {
+                setMessages(prev => [...prev, { role: 'bot', content: `Sorry, I am having trouble connecting right now. Details: ${errorMsg}` }]);
+            }
         } finally {
             setLoading(false);
         }

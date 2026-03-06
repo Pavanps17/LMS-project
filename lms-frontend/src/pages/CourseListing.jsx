@@ -42,6 +42,7 @@ export default function CourseListing() {
                                 <span className="instructor">
                                     <UserIcon size={14} /> {course.instructor?.uname || 'Expert Instructor'}
                                 </span>
+                                <span className="price font-bold text-lg" style={{ fontWeight: '700', color: 'var(--text-main)', fontSize: '1.1rem' }}>${course.price || 999}</span>
                             </div>
 
                             <Link to={`/courses/${course.id}`} className="btn-primary p-2 text-center rounded block mt-4">
