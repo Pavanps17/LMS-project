@@ -3,12 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { BookOpen, User as UserIcon, Clock } from 'lucide-react';
 
-const mockCourses = [
-    { id: 1, title: 'Java Masterclass', category: 'Java', description: 'Learn Java from scratch to advanced. OOP, memory management, and advanced features.', thumbnail_url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', instructor: { uname: 'John Doe' } },
-    { id: 2, title: 'Python for Data Science', category: 'Python', description: 'Comprehensive Python programming including Pandas, NumPy and data visualization.', thumbnail_url: 'https://images.unsplash.com/photo-1526379095098-d400fd0bfce8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', instructor: { uname: 'Jane Smith' } },
-    { id: 3, title: 'Machine Learning A-Z', category: 'ML', description: 'Learn Machine Learning, NLP, Deep Learning and build real AI models.', thumbnail_url: 'https://images.unsplash.com/photo-1555949963-aa79dcee57d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', instructor: { uname: 'Alan AI' } },
-];
-
+import { mockCourses, subjects } from '../mockData';
 export default function CourseListing() {
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -27,9 +22,9 @@ export default function CourseListing() {
             <h1 className="page-title text-gradient">Explore Our Courses</h1>
             <div className="filters">
                 <span className="badge active">All</span>
-                <span className="badge">Java</span>
-                <span className="badge">Python</span>
-                <span className="badge">Machine Learning</span>
+                {subjects.map(sub => (
+                    <span key={sub} className="badge">{sub}</span>
+                ))}
             </div>
 
             <div className="course-grid">

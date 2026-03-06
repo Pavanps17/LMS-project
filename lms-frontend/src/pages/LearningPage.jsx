@@ -4,26 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Play, CheckCircle, ArrowLeft, ArrowRight, BookOpen } from 'lucide-react';
 
-const mockCourseDetails = {
-    course: { id: 1, title: 'Java Masterclass' },
-    sections: [
-        {
-            section: { id: 1, title: 'Basics of Java' },
-            lessons: [
-                { id: 1, title: 'Variables and Data Types', duration: 15, youtubeUrl: 'eIrMbAQSU34' },
-                { id: 2, title: 'Control Flow (If, loops)', duration: 25, youtubeUrl: 'grEKMHGYyns' }
-            ]
-        },
-        {
-            section: { id: 2, title: 'Object Oriented Programming' },
-            lessons: [
-                { id: 3, title: 'Classes and Objects', duration: 30, youtubeUrl: 'IUqKuEjtNxw' },
-                { id: 4, title: 'Inheritance and Polymorphism', duration: 40, youtubeUrl: 'VsMpwC9k6lM' }
-            ]
-        }
-    ]
-};
-
+import { getMockCourseDetails } from '../mockData';
 export default function LearningPage() {
     const { courseId, lessonId } = useParams();
     const navigate = useNavigate();
@@ -36,8 +17,8 @@ export default function LearningPage() {
     useEffect(() => {
         // Fetch Course Details
         axios.get(`http://localhost:8080/api/courses/${courseId}`)
-            .then(res => setData(res.data?.course ? res.data : mockCourseDetails))
-            .catch(() => setData(mockCourseDetails))
+            .then(res => setData(res.data?.course ? res.data : getMockCourseDetails(courseId)))
+            .catch(() => setData(getMockCourseDetails(courseId)))
             .finally(() => setLoading(false));
 
         // Fetch Progress Tracking

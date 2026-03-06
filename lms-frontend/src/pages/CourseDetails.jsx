@@ -4,26 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { PlayCircle, Clock, BookOpen, User, CheckCircle } from 'lucide-react';
 
-const mockCourseDetails = {
-    course: { id: 1, title: 'Java Masterclass', category: 'Java', description: 'Master Java basics to advanced topics. This course covers everything from simple primitive types and object-oriented programming to multithreading, databases, and modern features like streams and lambdas.', instructor: { uname: 'John Doe' } },
-    sections: [
-        {
-            section: { id: 1, title: 'Basics of Java' },
-            lessons: [
-                { id: 1, title: 'Variables and Data Types', duration: 15, youtubeUrl: 'https://www.youtube.com/embed/eIrMbAQSU34' },
-                { id: 2, title: 'Control Flow (If, loops)', duration: 25, youtubeUrl: 'https://www.youtube.com/embed/eIrMbAQSU34' }
-            ]
-        },
-        {
-            section: { id: 2, title: 'Object Oriented Programming' },
-            lessons: [
-                { id: 3, title: 'Classes and Objects', duration: 30, youtubeUrl: 'https://www.youtube.com/embed/eIrMbAQSU34' },
-                { id: 4, title: 'Inheritance and Polymorphism', duration: 40, youtubeUrl: 'https://www.youtube.com/embed/eIrMbAQSU34' }
-            ]
-        }
-    ]
-};
-
+import { getMockCourseDetails } from '../mockData';
 export default function CourseDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -35,8 +16,8 @@ export default function CourseDetails() {
 
     useEffect(() => {
         axios.get(`http://localhost:8080/api/courses/${id}`)
-            .then(res => setData(res.data?.course ? res.data : mockCourseDetails))
-            .catch(() => setData(mockCourseDetails))
+            .then(res => setData(res.data?.course ? res.data : getMockCourseDetails(id)))
+            .catch(() => setData(getMockCourseDetails(id)))
             .finally(() => setLoading(false));
     }, [id]);
 
