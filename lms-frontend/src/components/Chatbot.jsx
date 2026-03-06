@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // API Configuration
 const HUGGING_FACE_API_KEY = 'hf_' + 'DzACaubPyAiLjECRwcQykmkmASYwsOUmva';
-const MODEL = 'mistralai/Mistral-7B-Instruct-v0.2'; // Hugging Face model
+const MODEL = 'Qwen/Qwen3.5-0.8B'; // Hugging Face model
 
 export default function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
@@ -31,23 +31,26 @@ export default function Chatbot() {
         setInput('');
         setLoading(true);
 
-        // Format history for OpenRouter
-        const apiMessages = [
-            { role: 'system', content: 'You are Codezilla, a helpful AI assistant for the e-learning platform LEARNZILLA. Answer queries concisely and politely.' },
-            ...messages.map(m => ({
-                role: m.role === 'bot' ? 'assistant' : 'user',
-                content: m.content
-            })),
-            { role: 'user', content: userMsg.content }
-        ];
+        // Format history for HuggingFace direct model API
+        let prompt = `<|system|>\nYou are Codezilla, a helpful AI assistant for the e-learning platform LEARNZILLA. Answer queries concisely and politely.</s>\n`;
+        messages.forEach(m => {
+            if (m.role === 'bot') {
+                prompt += `<|assistant|>\n${m.content}</s>\n`;
+            } else {
+                prompt += `<|user|>\n${m.content}</s>\n`;
+            }
+        });
+        prompt += `<|user|>\n${userMsg.content}</s>\n<|assistant|>\n`;
 
         try {
             const response = await axios.post(
-                `https://api-inference.huggingface.co/models/${MODEL}/v1/chat/completions`,
+                `https://api-inference.huggingface.co/models/${MODEL}`,
                 {
-                    model: MODEL,
-                    messages: apiMessages,
-                    max_tokens: 500,
+                    inputs: prompt,
+                    parameters: {
+                        max_new_tokens: 500,
+                        return_full_text: false
+                    }
                 },
                 {
                     headers: {
@@ -57,7 +60,7 @@ export default function Chatbot() {
                 }
             );
 
-            const botReply = response.data.choices[0].message.content;
+            const botReply = response.data[0]?.generated_text || "I am sorry, but I received an empty response.";
             setMessages(prev => [...prev, { role: 'bot', content: botReply }]);
         } catch (error) {
             const errorMsg = error.response?.data?.error?.message || error.message;
