@@ -52,6 +52,8 @@ export default function Chatbot() {
                     headers: {
                         'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
                         'Content-Type': 'application/json',
+                        'HTTP-Referer': window.location.origin,
+                        'X-Title': 'LEARNZILLA'
                     }
                 }
             );
@@ -59,7 +61,7 @@ export default function Chatbot() {
             const botReply = response.data.choices[0].message.content;
             setMessages(prev => [...prev, { role: 'bot', content: botReply }]);
         } catch (error) {
-            console.error('Chat error:', error);
+            console.error('Chat error:', error.response?.data || error.message);
             setMessages(prev => [...prev, { role: 'bot', content: 'Sorry, I am having trouble connecting right now. Please try again later.' }]);
         } finally {
             setLoading(false);
