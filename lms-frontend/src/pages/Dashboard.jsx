@@ -7,7 +7,7 @@ export default function Dashboard() {
         <div className="dashboard-container">
             <section className="hero-section">
                 <div className="hero-content">
-                    <h1 className="hero-title">Unlock Your Potential with LMS Pro</h1>
+                    <h1 className="hero-title">Unlock Your Potential with LEARNZILLA</h1>
                     <p className="hero-description">
                         Learn programming, master machine learning, and advance your career with expert-led courses.
                     </p>

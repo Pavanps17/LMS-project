@@ -8,7 +8,7 @@ export default function Signup() {
     const navigate = useNavigate();
     const { login } = useAuth();
     const [formData, setFormData] = useState({
-        uid: '', uname: '', password: '', gmail: '', phoneNumber: ''
+        uid: '', uname: '', password: '', gmail: '', phoneNumber: '', role: 'STUDENT'
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -44,7 +44,7 @@ export default function Signup() {
                         <UserPlus size={24} className="icon-white" />
                     </div>
                     <h2>Create Account</h2>
-                    <p>Join the LMS platform today.</p>
+                    <p>Join the LEARNZILLA platform today.</p>
                 </div>
                 {error && <div className="error-alert">{error}</div>}
                 <form onSubmit={handleSubmit} className="auth-form">
@@ -72,6 +72,16 @@ export default function Signup() {
                         <Lock className="input-icon" size={18} />
                         <input type="password" placeholder="Password" required minLength="6"
                             value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} />
+                    </div>
+                    <div className="input-group">
+                        <select
+                            className="role-select"
+                            value={formData.role}
+                            onChange={e => setFormData({ ...formData, role: e.target.value })}
+                        >
+                            <option value="STUDENT">Student</option>
+                            <option value="ADMIN">Admin</option>
+                        </select>
                     </div>
                     <button type="submit" disabled={loading} className="btn-primary w-full p-3 rounded">
                         {loading ? 'Creating Account...' : 'Sign Up'}

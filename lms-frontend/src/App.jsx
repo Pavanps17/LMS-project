@@ -8,6 +8,7 @@ import Signup from './pages/Signup';
 import CourseListing from './pages/CourseListing';
 import CourseDetails from './pages/CourseDetails';
 import LearningPage from './pages/LearningPage';
+import Chatbot from './components/Chatbot';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -36,6 +37,7 @@ function AppRoutes() {
             } />
           </Routes>
         </main>
+        <Chatbot />
       </div>
     </Router>
   );

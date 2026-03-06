@@ -16,7 +16,7 @@ export default function Navbar() {
         <nav className="navbar glass">
             <div className="nav-brand">
                 <BookOpen size={28} className="brand-icon" />
-                <Link to="/">LMS Pro</Link>
+                <Link to="/">LEARNZILLA</Link>
             </div>
             <div className="nav-links">
                 <Link to="/courses" className="nav-link">Courses</Link>
