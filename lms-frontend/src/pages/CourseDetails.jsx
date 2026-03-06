@@ -21,26 +21,69 @@ export default function CourseDetails() {
             .finally(() => setLoading(false));
     }, [id]);
 
-    const handleEnroll = async () => {
+    const loadRazorpayScript = () => {
+        return new Promise((resolve) => {
+            const script = document.createElement("script");
+            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+        });
+    };
+
+    const handlePayment = async () => {
         if (!user) {
             navigate('/login');
             return;
         }
 
         setEnrolling(true);
-        try {
-            await axios.post('http://localhost:8080/api/student/enroll',
-                { userId: user.id || 1, courseId: id },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            navigate(`/learn/${id}`);
-        } catch (err) {
-            console.error('Enrollment error', err);
-            // Simulate successful enrollment on error if mocked mapping
-            navigate(`/learn/${id}`);
-        } finally {
+        const res = await loadRazorpayScript();
+
+        if (!res) {
+            alert("Razorpay SDK failed to load. Are you online?");
             setEnrolling(false);
+            return;
         }
+
+        const options = {
+            key: "rzp_test_SNuDEU4SKczr1Q",
+            amount: (data.course.price || 999) * 100, // API operates in subunits
+            currency: "INR",
+            name: "LEARNZILLA",
+            description: `Payment for ${data.course.title} (Test Mode)`,
+            handler: async function (response) {
+                alert(`Payment successful! Reference ID: ${response.razorpay_payment_id}`);
+
+                // On success, proceed with enrollment in backend
+                try {
+                    await axios.post('http://localhost:8080/api/student/enroll',
+                        { userId: user.id || 1, courseId: id },
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    );
+                    navigate(`/learn/${id}`);
+                } catch (err) {
+                    console.error('Enrollment error', err);
+                    navigate(`/learn/${id}`); // Fallback
+                } finally {
+                    setEnrolling(false);
+                }
+            },
+            prefill: {
+                name: user?.uname || "Student",
+                email: user?.uemail || "student@example.com",
+            },
+            theme: {
+                color: "#18181b" // Match text-main brand color
+            }
+        };
+
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.on('payment.failed', function (response) {
+            alert("Payment failed! Please try again.");
+            setEnrolling(false);
+        });
+        paymentObject.open();
     };
 
     if (loading || !data) return <div className="loading-spinner"></div>;
@@ -59,10 +102,10 @@ export default function CourseDetails() {
                     <span className="tag"><User size={16} /> {course.instructor?.uname || 'Instructor'}</span>
                     <span className="tag"><BookOpen size={16} /> {totalLessons} Lessons</span>
                     <span className="tag"><Clock size={16} /> {Math.floor(totalDuration / 60)}h {totalDuration % 60}m</span>
-                    <span className="tag" style={{ background: 'var(--text-main)', color: 'white' }}>${course.price || 999}</span>
+                    <span className="tag" style={{ background: 'var(--text-main)', color: 'white' }}>₹{course.price || 999}</span>
                 </div>
-                <button onClick={handleEnroll} disabled={enrolling} className="btn-enroll shine-effect">
-                    {enrolling ? 'Enrolling...' : 'Enroll Now'}
+                <button onClick={handlePayment} disabled={enrolling} className="btn-enroll shine-effect">
+                    {enrolling ? 'Processing...' : 'Pay & Enroll Now'}
                 </button>
             </div>
 
