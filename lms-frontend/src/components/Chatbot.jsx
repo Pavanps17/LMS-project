@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X } from 'lucide-react';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
 
 // API Configuration
 const HUGGING_FACE_API_KEY = 'hf_' + 'DzACaubPyAiLjECRwcQykmkmASYwsOUmva';
@@ -91,7 +92,7 @@ export default function Chatbot() {
                     <div className="chat-messages">
                         {messages.map((msg, idx) => (
                             <div key={idx} className={`chat-msg ${msg.role === 'user' ? 'msg-user' : 'msg-bot'}`}>
-                                {msg.content}
+                                <ReactMarkdown>{msg.content}</ReactMarkdown>
                             </div>
                         ))}
                         {loading && (
